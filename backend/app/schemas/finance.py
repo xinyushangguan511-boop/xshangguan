@@ -33,6 +33,7 @@ class FinanceDataResponse(BaseModel):
     monthly_payment_received: Optional[Decimal]
     target_margin: Optional[Decimal]
     remarks: Optional[str]
+    created_by: Optional[UUID] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

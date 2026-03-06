@@ -45,6 +45,7 @@ class EngineeringDataResponse(BaseModel):
     staff_count: Optional[int]
     next_month_plan: Optional[Decimal]
     remarks: Optional[str]
+    created_by: Optional[UUID] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

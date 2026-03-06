@@ -26,7 +26,11 @@ class FinanceData(Base):
     monthly_payment_received: Mapped[Decimal | None] = mapped_column(DECIMAL(15, 2), nullable=True)
     target_margin: Mapped[Decimal | None] = mapped_column(DECIMAL(5, 2), nullable=True)
     remarks: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Relationships
     project = relationship("Project", back_populates="finance_data")
+    creator = relationship("User", foreign_keys=[created_by])

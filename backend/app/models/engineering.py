@@ -30,7 +30,11 @@ class EngineeringData(Base):
     staff_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
     next_month_plan: Mapped[Decimal | None] = mapped_column(DECIMAL(15, 2), nullable=True)
     remarks: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Relationships
     project = relationship("Project", back_populates="engineering_data")
+    creator = relationship("User", foreign_keys=[created_by])

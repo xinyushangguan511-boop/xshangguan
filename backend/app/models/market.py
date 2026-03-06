@@ -30,7 +30,11 @@ class MarketData(Base):
     progress_payment_ratio: Mapped[Decimal | None] = mapped_column(DECIMAL(5, 2), nullable=True)
     contract_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
     remarks: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_by: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Relationships
     project = relationship("Project", back_populates="market_data")
+    creator = relationship("User", foreign_keys=[created_by])

@@ -5,6 +5,7 @@ from app.config import settings
 from app.database import init_db
 from app.routers import (
     auth_router,
+    users_router,
     projects_router,
     market_router,
     engineering_router,
@@ -41,6 +42,7 @@ app.add_middleware(
 
 # Routers
 app.include_router(auth_router)
+app.include_router(users_router)
 app.include_router(projects_router)
 app.include_router(market_router)
 app.include_router(engineering_router)

@@ -45,6 +45,7 @@ class MarketDataResponse(BaseModel):
     progress_payment_ratio: Optional[Decimal]
     contract_type: Optional[str]
     remarks: Optional[str]
+    created_by: Optional[UUID] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

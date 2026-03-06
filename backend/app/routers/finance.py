@@ -60,7 +60,11 @@ async def create_finance_data(
             detail=f"Data for {data.year}-{data.month} already exists",
         )
 
-    finance_data = FinanceData(project_id=project_id, **data.model_dump())
+    finance_data = FinanceData(
+        project_id=project_id,
+        created_by=current_user.id,
+        **data.model_dump()
+    )
     db.add(finance_data)
     await db.commit()
     await db.refresh(finance_data)

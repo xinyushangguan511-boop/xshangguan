@@ -60,7 +60,11 @@ async def create_market_data(
             detail=f"Data for {data.year}-{data.month} already exists",
         )
 
-    market_data = MarketData(project_id=project_id, **data.model_dump())
+    market_data = MarketData(
+        project_id=project_id,
+        created_by=current_user.id,
+        **data.model_dump()
+    )
     db.add(market_data)
     await db.commit()
     await db.refresh(market_data)

@@ -61,7 +61,11 @@ async def create_engineering_data(
             detail=f"Data for {data.year}-{data.month} already exists",
         )
 
-    engineering_data = EngineeringData(project_id=project_id, **data.model_dump())
+    engineering_data = EngineeringData(
+        project_id=project_id,
+        created_by=current_user.id,
+        **data.model_dump()
+    )
     db.add(engineering_data)
     await db.commit()
     await db.refresh(engineering_data)
