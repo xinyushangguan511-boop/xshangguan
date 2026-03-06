@@ -56,38 +56,38 @@ export const ProjectDetail: React.FC = () => {
   }
 
   if (!project) {
-    return <div>Project not found</div>;
+    return <div>项目未找到</div>;
   }
 
   const tabItems = [
     {
       key: 'info',
-      label: 'Project Info',
+      label: '项目信息',
       children: (
         <Descriptions bordered column={2}>
-          <Descriptions.Item label="Project Code">{project.project_code}</Descriptions.Item>
-          <Descriptions.Item label="Project Name">{project.project_name}</Descriptions.Item>
-          <Descriptions.Item label="Status">
+          <Descriptions.Item label="项目编号">{project.project_code}</Descriptions.Item>
+          <Descriptions.Item label="项目名称">{project.project_name}</Descriptions.Item>
+          <Descriptions.Item label="状态">
             <Tag color={getStatusColor(project.status)}>{getStatusText(project.status)}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="Construction Unit">{project.construction_unit || '-'}</Descriptions.Item>
-          <Descriptions.Item label="Location">{project.location || '-'}</Descriptions.Item>
-          <Descriptions.Item label="Contract Duration">
-            {project.contract_duration ? `${project.contract_duration} days` : '-'}
+          <Descriptions.Item label="施工单位">{project.construction_unit || '-'}</Descriptions.Item>
+          <Descriptions.Item label="项目地址">{project.location || '-'}</Descriptions.Item>
+          <Descriptions.Item label="合同工期">
+            {project.contract_duration ? `${project.contract_duration}天` : '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="Contract Start">
+          <Descriptions.Item label="合同开始日期">
             {project.contract_start_date ? dayjs(project.contract_start_date).format('YYYY-MM-DD') : '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="Contract End">
+          <Descriptions.Item label="合同结束日期">
             {project.contract_end_date ? dayjs(project.contract_end_date).format('YYYY-MM-DD') : '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="Actual Start">
+          <Descriptions.Item label="实际开始日期">
             {project.actual_start_date ? dayjs(project.actual_start_date).format('YYYY-MM-DD') : '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="Created At">
+          <Descriptions.Item label="创建时间">
             {dayjs(project.created_at).format('YYYY-MM-DD HH:mm')}
           </Descriptions.Item>
-          <Descriptions.Item label="Description" span={2}>
+          <Descriptions.Item label="项目描述" span={2}>
             {project.description || '-'}
           </Descriptions.Item>
         </Descriptions>
@@ -95,22 +95,22 @@ export const ProjectDetail: React.FC = () => {
     },
     {
       key: 'market',
-      label: `Market Data (${marketData?.length || 0})`,
+      label: `市场数据 (${marketData?.length || 0})`,
       children: <MarketDataTab projectId={id!} data={marketData || []} />,
     },
     {
       key: 'engineering',
-      label: `Engineering Data (${engineeringData?.length || 0})`,
+      label: `工程数据 (${engineeringData?.length || 0})`,
       children: <EngineeringDataTab projectId={id!} data={engineeringData || []} />,
     },
     {
       key: 'finance',
-      label: `Finance Data (${financeData?.length || 0})`,
+      label: `财务数据 (${financeData?.length || 0})`,
       children: <FinanceDataTab projectId={id!} data={financeData || []} />,
     },
     {
       key: 'attachments',
-      label: `Attachments (${attachments?.length || 0})`,
+      label: `附件 (${attachments?.length || 0})`,
       children: <AttachmentsTab projectId={id!} data={attachments || []} />,
     },
   ];
@@ -119,7 +119,7 @@ export const ProjectDetail: React.FC = () => {
     <div>
       <Space style={{ marginBottom: 16 }}>
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/projects')}>
-          Back
+          返回
         </Button>
         <Title level={4} style={{ margin: 0 }}>
           {project.project_name}

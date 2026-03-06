@@ -2,6 +2,11 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import type {
   Token,
   User,
+  UserCreate,
+  UserUpdate,
+  ProfileUpdate,
+  PasswordChange,
+  RegistrationStatus,
   Project,
   ProjectListResponse,
   MarketData,
@@ -72,6 +77,43 @@ export const authApi = {
   me: async (): Promise<User> => {
     const response = await api.get<User>('/auth/me');
     return response.data;
+  },
+  registrationStatus: async (): Promise<RegistrationStatus> => {
+    const response = await api.get<RegistrationStatus>('/auth/registration-status');
+    return response.data;
+  },
+  updateProfile: async (data: ProfileUpdate): Promise<User> => {
+    const response = await api.put<User>('/auth/profile', data);
+    return response.data;
+  },
+  changePassword: async (data: PasswordChange): Promise<void> => {
+    await api.put('/auth/change-password', data);
+  },
+};
+
+// Users (Admin only)
+export const usersApi = {
+  list: async (): Promise<User[]> => {
+    const response = await api.get<User[]>('/users/');
+    return response.data;
+  },
+  get: async (id: string): Promise<User> => {
+    const response = await api.get<User>(`/users/${id}`);
+    return response.data;
+  },
+  create: async (data: UserCreate): Promise<User> => {
+    const response = await api.post<User>('/users/', data);
+    return response.data;
+  },
+  update: async (id: string, data: UserUpdate): Promise<User> => {
+    const response = await api.put<User>(`/users/${id}`, data);
+    return response.data;
+  },
+  resetPassword: async (id: string, newPassword: string): Promise<void> => {
+    await api.put(`/users/${id}/reset-password`, { new_password: newPassword });
+  },
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/users/${id}`);
   },
 };
 

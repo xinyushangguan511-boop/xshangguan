@@ -16,12 +16,12 @@ interface Props {
 }
 
 const FILE_TYPES = [
-  { value: 'contract', label: 'Contract' },
-  { value: 'certificate', label: 'Certificate' },
-  { value: 'report', label: 'Report' },
-  { value: 'drawing', label: 'Drawing' },
-  { value: 'photo', label: 'Photo' },
-  { value: 'other', label: 'Other' },
+  { value: 'contract', label: '合同' },
+  { value: 'certificate', label: '证书' },
+  { value: 'report', label: '报告' },
+  { value: 'drawing', label: '图纸' },
+  { value: 'photo', label: '照片' },
+  { value: 'other', label: '其他' },
 ];
 
 export const AttachmentsTab: React.FC<Props> = ({ projectId, data }) => {
@@ -35,21 +35,21 @@ export const AttachmentsTab: React.FC<Props> = ({ projectId, data }) => {
     mutationFn: ({ file, fileType }: { file: File; fileType: string }) =>
       attachmentsApi.upload(projectId, file, fileType),
     onSuccess: () => {
-      message.success('File uploaded successfully');
+      message.success('文件上传成功');
       queryClient.invalidateQueries({ queryKey: ['attachments', projectId] });
       setModalOpen(false);
       setFileList([]);
     },
-    onError: () => message.error('Failed to upload file'),
+    onError: () => message.error('文件上传失败'),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => attachmentsApi.delete(id),
     onSuccess: () => {
-      message.success('File deleted successfully');
+      message.success('文件删除成功');
       queryClient.invalidateQueries({ queryKey: ['attachments', projectId] });
     },
-    onError: () => message.error('Failed to delete file'),
+    onError: () => message.error('文件删除失败'),
   });
 
   const handleDownload = async (attachment: Attachment) => {
@@ -64,28 +64,28 @@ export const AttachmentsTab: React.FC<Props> = ({ projectId, data }) => {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch {
-      message.error('Failed to download file');
+      message.error('文件下载失败');
     }
   };
 
   const handleUpload = () => {
     if (fileList.length === 0) {
-      message.warning('Please select a file');
+      message.warning('请选择要上传的文件');
       return;
     }
     uploadMutation.mutate({ file: fileList[0], fileType });
   };
 
   const columns = [
-    { title: 'File Name', dataIndex: 'file_name', ellipsis: true },
+    { title: '文件名', dataIndex: 'file_name', ellipsis: true },
     {
-      title: 'Type',
+      title: '类型',
       dataIndex: 'file_type',
       width: 100,
       render: (type: string) => FILE_TYPES.find(t => t.value === type)?.label || type || '-',
     },
     {
-      title: 'Department',
+      title: '所属部门',
       dataIndex: 'department',
       width: 120,
       render: (dept: string) => (
@@ -93,26 +93,26 @@ export const AttachmentsTab: React.FC<Props> = ({ projectId, data }) => {
       ),
     },
     {
-      title: 'Size',
+      title: '大小',
       dataIndex: 'file_size',
       width: 100,
       render: (size: number) => formatFileSize(size),
     },
     {
-      title: 'Uploaded At',
+      title: '上传时间',
       dataIndex: 'uploaded_at',
       width: 150,
       render: (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm'),
     },
     {
-      title: 'Actions',
+      title: '操作',
       key: 'actions',
       width: 100,
       render: (_: unknown, record: Attachment) => (
         <Space>
           <Button type="link" icon={<DownloadOutlined />} onClick={() => handleDownload(record)} />
           {(record.uploaded_by === user?.id || user?.department === 'admin') && (
-            <Popconfirm title="Delete this file?" onConfirm={() => deleteMutation.mutate(record.id)}>
+            <Popconfirm title="确定删除该文件？" onConfirm={() => deleteMutation.mutate(record.id)}>
               <Button type="link" danger icon={<DeleteOutlined />} />
             </Popconfirm>
           )}
@@ -129,13 +129,13 @@ export const AttachmentsTab: React.FC<Props> = ({ projectId, data }) => {
         onClick={() => setModalOpen(true)}
         style={{ marginBottom: 16 }}
       >
-        Upload File
+        上传文件
       </Button>
 
       <Table columns={columns} dataSource={data} rowKey="id" size="small" />
 
       <Modal
-        title="Upload File"
+        title="上传文件"
         open={modalOpen}
         onOk={handleUpload}
         onCancel={() => {
@@ -143,13 +143,15 @@ export const AttachmentsTab: React.FC<Props> = ({ projectId, data }) => {
           setFileList([]);
         }}
         confirmLoading={uploadMutation.isPending}
+        okText="确定"
+        cancelText="取消"
       >
         <Space direction="vertical" style={{ width: '100%' }}>
           <Select
             value={fileType}
             onChange={setFileType}
             style={{ width: '100%' }}
-            placeholder="Select file type"
+            placeholder="选择文件类型"
           >
             {FILE_TYPES.map(t => (
               <Select.Option key={t.value} value={t.value}>{t.label}</Select.Option>
@@ -168,9 +170,9 @@ export const AttachmentsTab: React.FC<Props> = ({ projectId, data }) => {
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
             </p>
-            <p className="ant-upload-text">Click or drag file to upload</p>
+            <p className="ant-upload-text">点击或拖拽文件到此区域上传</p>
             <p className="ant-upload-hint">
-              Supported: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG, ZIP (max 50MB)
+              支持格式：PDF, DOC, DOCX, XLS, XLSX, PNG, JPG, ZIP（最大50MB）
             </p>
           </Dragger>
         </Space>

@@ -8,6 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
   hasPermission: (departments: Department[]) => boolean;
 }
 
@@ -58,6 +59,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return departments.includes(user.department);
   };
 
+  const refreshUser = async () => {
+    await fetchUser();
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -66,6 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!user,
         login,
         logout,
+        refreshUser,
         hasPermission,
       }}
     >

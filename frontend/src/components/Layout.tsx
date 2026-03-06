@@ -9,27 +9,36 @@ import {
   DollarOutlined,
   BarChartOutlined,
   FileOutlined,
-  SettingOutlined,
   UserOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 import { useAuth } from '../stores/AuthContext';
 import { getDepartmentText } from '../utils';
 
 const { Header, Sider, Content } = AntLayout;
 
-const menuItems = [
-  { key: '/dashboard', icon: <DashboardOutlined />, label: 'Dashboard' },
-  { key: '/projects', icon: <ProjectOutlined />, label: 'Projects' },
-  { key: '/market', icon: <ShopOutlined />, label: 'Market Data' },
-  { key: '/engineering', icon: <ToolOutlined />, label: 'Engineering Data' },
-  { key: '/finance', icon: <DollarOutlined />, label: 'Finance Data' },
-  { key: '/statistics', icon: <BarChartOutlined />, label: 'Statistics' },
-  { key: '/attachments', icon: <FileOutlined />, label: 'Attachments' },
-  { key: '/settings', icon: <SettingOutlined />, label: 'Settings' },
-];
+const getMenuItems = (isAdmin: boolean) => {
+  const baseItems = [
+    { key: '/dashboard', icon: <DashboardOutlined />, label: '工作台' },
+    { key: '/projects', icon: <ProjectOutlined />, label: '项目管理' },
+    { key: '/market', icon: <ShopOutlined />, label: '市场数据' },
+    { key: '/engineering', icon: <ToolOutlined />, label: '工程数据' },
+    { key: '/finance', icon: <DollarOutlined />, label: '财务数据' },
+    { key: '/statistics', icon: <BarChartOutlined />, label: '统计报表' },
+    { key: '/attachments', icon: <FileOutlined />, label: '附件中心' },
+  ];
+
+  if (isAdmin) {
+    baseItems.push({ key: '/users', icon: <TeamOutlined />, label: '用户管理' });
+  } else {
+    baseItems.push({ key: '/my-account', icon: <UserOutlined />, label: '我的账户' });
+  }
+
+  return baseItems;
+};
 
 export const Layout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -59,7 +68,7 @@ export const Layout: React.FC = () => {
       label: (
         <Space>
           <LogoutOutlined />
-          Logout
+          退出登录
         </Space>
       ),
       onClick: () => {
@@ -87,13 +96,13 @@ export const Layout: React.FC = () => {
           }}
         >
           <h2 style={{ margin: 0, color: token.colorPrimary }}>
-            {collapsed ? 'MIS' : 'Cross-Dept MIS'}
+            {collapsed ? 'MIS' : '跨部门管理系统'}
           </h2>
         </div>
         <Menu
           mode="inline"
           selectedKeys={[location.pathname]}
-          items={menuItems}
+          items={getMenuItems(user?.department === 'admin')}
           onClick={handleMenuClick}
           style={{ border: 'none' }}
         />

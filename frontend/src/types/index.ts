@@ -6,8 +6,45 @@ export interface User {
   id: string;
   username: string;
   department: Department;
+  real_name?: string;
+  phone?: string;
+  email?: string;
   is_active: boolean;
   created_at: string;
+}
+
+export interface UserCreate {
+  username: string;
+  password: string;
+  department: Department;
+  real_name?: string;
+  phone?: string;
+  email?: string;
+}
+
+export interface UserUpdate {
+  username?: string;
+  department?: Department;
+  real_name?: string;
+  phone?: string;
+  email?: string;
+  is_active?: boolean;
+}
+
+export interface ProfileUpdate {
+  real_name?: string;
+  phone?: string;
+  email?: string;
+}
+
+export interface PasswordChange {
+  current_password: string;
+  new_password: string;
+}
+
+export interface RegistrationStatus {
+  registration_allowed: boolean;
+  message: string;
 }
 
 export interface Token {
@@ -54,6 +91,7 @@ export interface MarketData {
   progress_payment_ratio?: number;
   contract_type?: string;
   remarks?: string;
+  created_by?: string;
   created_at: string;
 }
 
@@ -71,6 +109,7 @@ export interface EngineeringData {
   staff_count?: number;
   next_month_plan?: number;
   remarks?: string;
+  created_by?: string;
   created_at: string;
 }
 
@@ -84,6 +123,7 @@ export interface FinanceData {
   monthly_payment_received?: number;
   target_margin?: number;
   remarks?: string;
+  created_by?: string;
   created_at: string;
 }
 

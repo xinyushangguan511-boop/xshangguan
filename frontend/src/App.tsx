@@ -15,6 +15,8 @@ import { FinancePage } from './pages/FinancePage';
 import { Statistics } from './pages/Statistics';
 import { AttachmentsPage } from './pages/AttachmentsPage';
 import { Settings } from './pages/Settings';
+import { UserManagement } from './pages/UserManagement';
+import { MyAccount } from './pages/MyAccount';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,6 +60,8 @@ const App: React.FC = () => {
                 <Route path="statistics" element={<Statistics />} />
                 <Route path="attachments" element={<AttachmentsPage />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="my-account" element={<MyAccount />} />
               </Route>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>

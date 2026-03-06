@@ -51,7 +51,7 @@ export const Dashboard: React.FC = () => {
     legend: { bottom: '5%', left: 'center' },
     series: [
       {
-        name: 'Project Status',
+        name: '项目状态',
         type: 'pie',
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
@@ -60,9 +60,9 @@ export const Dashboard: React.FC = () => {
         emphasis: { label: { show: true, fontSize: 20, fontWeight: 'bold' } },
         labelLine: { show: false },
         data: [
-          { value: projectStats.planning, name: 'Planning', itemStyle: { color: '#1890ff' } },
-          { value: projectStats.inProgress, name: 'In Progress', itemStyle: { color: '#52c41a' } },
-          { value: projectStats.completed, name: 'Completed', itemStyle: { color: '#8c8c8c' } },
+          { value: projectStats.planning, name: '规划中', itemStyle: { color: '#1890ff' } },
+          { value: projectStats.inProgress, name: '进行中', itemStyle: { color: '#52c41a' } },
+          { value: projectStats.completed, name: '已完成', itemStyle: { color: '#8c8c8c' } },
         ],
       },
     ],
@@ -74,7 +74,7 @@ export const Dashboard: React.FC = () => {
       type: 'category',
       data: marketSummary?.contract_value_monthly.map(d => `${d.year}-${d.month}`) || [],
     },
-    yAxis: { type: 'value', name: 'Contract Value' },
+    yAxis: { type: 'value', name: '合同金额' },
     series: [
       {
         data: marketSummary?.contract_value_monthly.map(d => d.total) || [],
@@ -86,7 +86,7 @@ export const Dashboard: React.FC = () => {
 
   const outputChartOption = {
     tooltip: { trigger: 'axis' },
-    legend: { data: ['Output', 'Approval'] },
+    legend: { data: ['产值', '甲供批复'] },
     xAxis: {
       type: 'category',
       data: engineeringSummary?.monthly_output_cumulative.map(d => `${d.year}-${d.month}`) || [],
@@ -94,14 +94,14 @@ export const Dashboard: React.FC = () => {
     yAxis: { type: 'value' },
     series: [
       {
-        name: 'Output',
+        name: '产值',
         data: engineeringSummary?.monthly_output_cumulative.map(d => d.total) || [],
         type: 'line',
         smooth: true,
         itemStyle: { color: '#13c2c2' },
       },
       {
-        name: 'Approval',
+        name: '甲供批复',
         data: engineeringSummary?.monthly_approval_cumulative.map(d => d.total) || [],
         type: 'line',
         smooth: true,
@@ -112,13 +112,13 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <Title level={4}>Dashboard Overview</Title>
+      <Title level={4}>工作台概览</Title>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="Total Projects"
+              title="项目总数"
               value={projectStats.total}
               prefix={<ProjectOutlined />}
             />
@@ -127,7 +127,7 @@ export const Dashboard: React.FC = () => {
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="In Progress"
+              title="进行中"
               value={projectStats.inProgress}
               prefix={<SyncOutlined spin />}
               valueStyle={{ color: '#52c41a' }}
@@ -137,7 +137,7 @@ export const Dashboard: React.FC = () => {
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="Total Contract Value"
+              title="合同总金额"
               value={marketSummary?.total_contract_value || 0}
               prefix={<DollarOutlined />}
               formatter={(value) => formatCurrency(Number(value))}
@@ -147,7 +147,7 @@ export const Dashboard: React.FC = () => {
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="Gross Margin"
+              title="毛利率"
               value={financeSummary?.gross_margin || 0}
               suffix="%"
               prefix={<CheckCircleOutlined />}
@@ -160,12 +160,12 @@ export const Dashboard: React.FC = () => {
 
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} md={12}>
-          <Card title="Project Status Distribution">
+          <Card title="项目状态分布">
             <ReactECharts option={statusChartOption} style={{ height: 300 }} />
           </Card>
         </Col>
         <Col xs={24} md={12}>
-          <Card title="Monthly Contract Values">
+          <Card title="月度合同金额">
             <ReactECharts option={contractChartOption} style={{ height: 300 }} />
           </Card>
         </Col>
@@ -173,7 +173,7 @@ export const Dashboard: React.FC = () => {
 
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24}>
-          <Card title="Output & Approval Trends">
+          <Card title="产值与批复趋势">
             <ReactECharts option={outputChartOption} style={{ height: 300 }} />
           </Card>
         </Col>

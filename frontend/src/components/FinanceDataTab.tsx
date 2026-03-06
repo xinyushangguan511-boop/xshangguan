@@ -26,34 +26,34 @@ export const FinanceDataTab: React.FC<Props> = ({ projectId, data }) => {
   const createMutation = useMutation({
     mutationFn: (values: Partial<FinanceData>) => financeApi.create(projectId, values),
     onSuccess: () => {
-      message.success('Data created successfully');
+      message.success('数据创建成功');
       queryClient.invalidateQueries({ queryKey: ['financeData', projectId] });
       setModalOpen(false);
       form.resetFields();
     },
-    onError: () => message.error('Failed to create data'),
+    onError: () => message.error('数据创建失败'),
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<FinanceData> }) =>
       financeApi.update(projectId, id, data),
     onSuccess: () => {
-      message.success('Data updated successfully');
+      message.success('数据更新成功');
       queryClient.invalidateQueries({ queryKey: ['financeData', projectId] });
       setModalOpen(false);
       setEditingData(null);
       form.resetFields();
     },
-    onError: () => message.error('Failed to update data'),
+    onError: () => message.error('数据更新失败'),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => financeApi.delete(projectId, id),
     onSuccess: () => {
-      message.success('Data deleted successfully');
+      message.success('数据删除成功');
       queryClient.invalidateQueries({ queryKey: ['financeData', projectId] });
     },
-    onError: () => message.error('Failed to delete data'),
+    onError: () => message.error('数据删除失败'),
   });
 
   const handleOpenModal = (record?: FinanceData) => {
@@ -78,22 +78,22 @@ export const FinanceDataTab: React.FC<Props> = ({ projectId, data }) => {
   };
 
   const columns = [
-    { title: 'Year', dataIndex: 'year', width: 80 },
-    { title: 'Month', dataIndex: 'month', width: 80 },
-    { title: 'Monthly Revenue', dataIndex: 'monthly_revenue', render: (v: number) => formatCurrency(v) },
-    { title: 'Monthly Cost', dataIndex: 'monthly_cost', render: (v: number) => formatCurrency(v) },
-    { title: 'Payment Received', dataIndex: 'monthly_payment_received', render: (v: number) => formatCurrency(v) },
-    { title: 'Target Margin %', dataIndex: 'target_margin', render: (v: number) => v ? `${v}%` : '-' },
-    { title: 'Remarks', dataIndex: 'remarks', ellipsis: true },
+    { title: '年份', dataIndex: 'year', width: 80 },
+    { title: '月份', dataIndex: 'month', width: 80 },
+    { title: '月营收', dataIndex: 'monthly_revenue', render: (v: number) => formatCurrency(v) },
+    { title: '月成本', dataIndex: 'monthly_cost', render: (v: number) => formatCurrency(v) },
+    { title: '月回款', dataIndex: 'monthly_payment_received', render: (v: number) => formatCurrency(v) },
+    { title: '目标毛利率', dataIndex: 'target_margin', render: (v: number) => v ? `${v}%` : '-' },
+    { title: '备注', dataIndex: 'remarks', ellipsis: true },
     {
-      title: 'Actions',
+      title: '操作',
       key: 'actions',
       width: 100,
       render: (_: unknown, record: FinanceData) =>
         canEdit && (
           <Space>
             <Button type="link" icon={<EditOutlined />} onClick={() => handleOpenModal(record)} />
-            <Popconfirm title="Delete this entry?" onConfirm={() => deleteMutation.mutate(record.id)}>
+            <Popconfirm title="确定删除该条目？" onConfirm={() => deleteMutation.mutate(record.id)}>
               <Button type="link" danger icon={<DeleteOutlined />} />
             </Popconfirm>
           </Space>
@@ -110,14 +110,14 @@ export const FinanceDataTab: React.FC<Props> = ({ projectId, data }) => {
           onClick={() => handleOpenModal()}
           style={{ marginBottom: 16 }}
         >
-          Add Entry
+          新增数据
         </Button>
       )}
 
       <Table columns={columns} dataSource={data} rowKey="id" size="small" scroll={{ x: 1000 }} />
 
       <Modal
-        title={editingData ? 'Edit Finance Data' : 'Add Finance Data'}
+        title={editingData ? '编辑财务数据' : '新增财务数据'}
         open={modalOpen}
         onOk={handleSubmit}
         onCancel={() => {
@@ -127,40 +127,42 @@ export const FinanceDataTab: React.FC<Props> = ({ projectId, data }) => {
         }}
         confirmLoading={createMutation.isPending || updateMutation.isPending}
         width={600}
+        okText="确定"
+        cancelText="取消"
       >
         <Form form={form} layout="vertical">
           <Space style={{ display: 'flex' }}>
-            <Form.Item name="year" label="Year" rules={[{ required: true }]}>
+            <Form.Item name="year" label="年份" rules={[{ required: true, message: '请选择年份' }]}>
               <InputNumber min={2000} max={2100} disabled={!!editingData} />
             </Form.Item>
-            <Form.Item name="month" label="Month" rules={[{ required: true }]}>
+            <Form.Item name="month" label="月份" rules={[{ required: true, message: '请选择月份' }]}>
               <Select style={{ width: 100 }} disabled={!!editingData}>
                 {[...Array(12)].map((_, i) => (
-                  <Select.Option key={i + 1} value={i + 1}>{i + 1}</Select.Option>
+                  <Select.Option key={i + 1} value={i + 1}>{i + 1}月</Select.Option>
                 ))}
               </Select>
             </Form.Item>
           </Space>
 
           <Space style={{ display: 'flex' }}>
-            <Form.Item name="monthly_revenue" label="Monthly Revenue">
+            <Form.Item name="monthly_revenue" label="月营收">
               <InputNumber min={0} precision={2} style={{ width: 180 }} />
             </Form.Item>
-            <Form.Item name="monthly_cost" label="Monthly Cost">
+            <Form.Item name="monthly_cost" label="月成本">
               <InputNumber min={0} precision={2} style={{ width: 180 }} />
             </Form.Item>
           </Space>
 
           <Space style={{ display: 'flex' }}>
-            <Form.Item name="monthly_payment_received" label="Payment Received">
+            <Form.Item name="monthly_payment_received" label="月回款">
               <InputNumber min={0} precision={2} style={{ width: 180 }} />
             </Form.Item>
-            <Form.Item name="target_margin" label="Target Margin %">
+            <Form.Item name="target_margin" label="目标毛利率 %">
               <InputNumber min={0} max={100} precision={2} style={{ width: 120 }} />
             </Form.Item>
           </Space>
 
-          <Form.Item name="remarks" label="Remarks">
+          <Form.Item name="remarks" label="备注">
             <TextArea rows={2} />
           </Form.Item>
         </Form>

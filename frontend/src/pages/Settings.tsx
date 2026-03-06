@@ -13,43 +13,43 @@ export const Settings: React.FC = () => {
 
   return (
     <div>
-      <Title level={4}>User Settings</Title>
+      <Title level={4}>系统设置</Title>
 
-      <Card title="Profile Information">
+      <Card title="个人信息">
         <Descriptions bordered column={1}>
-          <Descriptions.Item label="Username">{user.username}</Descriptions.Item>
-          <Descriptions.Item label="Department">
+          <Descriptions.Item label="用户名">{user.username}</Descriptions.Item>
+          <Descriptions.Item label="所属部门">
             <Tag color={getDepartmentColor(user.department)}>
               {getDepartmentText(user.department)}
             </Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="Account Status">
+          <Descriptions.Item label="账户状态">
             <Tag color={user.is_active ? 'green' : 'red'}>
-              {user.is_active ? 'Active' : 'Inactive'}
+              {user.is_active ? '正常' : '已禁用'}
             </Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="Created At">
+          <Descriptions.Item label="创建时间">
             {dayjs(user.created_at).format('YYYY-MM-DD HH:mm:ss')}
           </Descriptions.Item>
         </Descriptions>
       </Card>
 
-      <Card title="Permissions" style={{ marginTop: 16 }}>
+      <Card title="权限信息" style={{ marginTop: 16 }}>
         <Descriptions bordered column={1}>
-          <Descriptions.Item label="Create Projects">
-            {user.department === 'market' || user.department === 'admin' ? 'Yes' : 'No'}
+          <Descriptions.Item label="创建项目">
+            {user.department === 'market' || user.department === 'admin' ? '是' : '否'}
           </Descriptions.Item>
-          <Descriptions.Item label="Edit Market Data">
-            {user.department === 'market' || user.department === 'admin' ? 'Yes' : 'No'}
+          <Descriptions.Item label="编辑市场数据">
+            {user.department === 'market' || user.department === 'admin' ? '是' : '否'}
           </Descriptions.Item>
-          <Descriptions.Item label="Edit Engineering Data">
-            {user.department === 'engineering' || user.department === 'admin' ? 'Yes' : 'No'}
+          <Descriptions.Item label="编辑工程数据">
+            {user.department === 'engineering' || user.department === 'admin' ? '是' : '否'}
           </Descriptions.Item>
-          <Descriptions.Item label="Edit Finance Data">
-            {user.department === 'finance' || user.department === 'admin' ? 'Yes' : 'No'}
+          <Descriptions.Item label="编辑财务数据">
+            {user.department === 'finance' || user.department === 'admin' ? '是' : '否'}
           </Descriptions.Item>
-          <Descriptions.Item label="Update Project Status">
-            {user.department === 'engineering' || user.department === 'market' || user.department === 'admin' ? 'Yes' : 'No'}
+          <Descriptions.Item label="更新项目状态">
+            {user.department === 'engineering' || user.department === 'market' || user.department === 'admin' ? '是' : '否'}
           </Descriptions.Item>
         </Descriptions>
       </Card>

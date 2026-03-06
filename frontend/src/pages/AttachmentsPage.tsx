@@ -29,10 +29,10 @@ export const AttachmentsPage: React.FC = () => {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => attachmentsApi.delete(id),
     onSuccess: () => {
-      message.success('File deleted successfully');
+      message.success('文件删除成功');
       queryClient.invalidateQueries({ queryKey: ['attachments', selectedProject] });
     },
-    onError: () => message.error('Failed to delete file'),
+    onError: () => message.error('文件删除失败'),
   });
 
   const handleDownload = async (attachment: Attachment) => {
@@ -47,15 +47,15 @@ export const AttachmentsPage: React.FC = () => {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch {
-      message.error('Failed to download file');
+      message.error('文件下载失败');
     }
   };
 
   const columns = [
-    { title: 'File Name', dataIndex: 'file_name', ellipsis: true },
-    { title: 'Type', dataIndex: 'file_type', width: 100 },
+    { title: '文件名', dataIndex: 'file_name', ellipsis: true },
+    { title: '类型', dataIndex: 'file_type', width: 100 },
     {
-      title: 'Department',
+      title: '所属部门',
       dataIndex: 'department',
       width: 120,
       render: (dept: string) => (
@@ -63,26 +63,26 @@ export const AttachmentsPage: React.FC = () => {
       ),
     },
     {
-      title: 'Size',
+      title: '大小',
       dataIndex: 'file_size',
       width: 100,
       render: (size: number) => formatFileSize(size),
     },
     {
-      title: 'Uploaded At',
+      title: '上传时间',
       dataIndex: 'uploaded_at',
       width: 150,
       render: (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm'),
     },
     {
-      title: 'Actions',
+      title: '操作',
       key: 'actions',
       width: 100,
       render: (_: unknown, record: Attachment) => (
         <Space>
           <Button type="link" icon={<DownloadOutlined />} onClick={() => handleDownload(record)} />
           {(record.uploaded_by === user?.id || user?.department === 'admin') && (
-            <Popconfirm title="Delete this file?" onConfirm={() => deleteMutation.mutate(record.id)}>
+            <Popconfirm title="确定删除该文件？" onConfirm={() => deleteMutation.mutate(record.id)}>
               <Button type="link" danger icon={<DeleteOutlined />} />
             </Popconfirm>
           )}
@@ -93,14 +93,14 @@ export const AttachmentsPage: React.FC = () => {
 
   return (
     <div>
-      <Title level={4}>File Center</Title>
+      <Title level={4}>附件中心</Title>
 
       <Card style={{ marginBottom: 16 }}>
         <Space>
-          <span>Select Project:</span>
+          <span>选择项目：</span>
           <Select
             style={{ width: 400 }}
-            placeholder="Select a project"
+            placeholder="请选择项目"
             loading={projectsLoading}
             value={selectedProject}
             onChange={setSelectedProject}
@@ -134,7 +134,7 @@ export const AttachmentsPage: React.FC = () => {
       ) : (
         <Card>
           <div style={{ textAlign: 'center', padding: 50, color: '#999' }}>
-            Please select a project to view attachments
+            请选择项目查看附件
           </div>
         </Card>
       )}

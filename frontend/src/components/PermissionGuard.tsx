@@ -15,7 +15,7 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
   departments,
   fallback,
 }) => {
-  const { user, isLoading, isAuthenticated, hasPermission } = useAuth();
+  const { isLoading, isAuthenticated, hasPermission } = useAuth();
 
   if (isLoading) {
     return (

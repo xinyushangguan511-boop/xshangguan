@@ -42,20 +42,20 @@ export const getStatusColor = (status: ProjectStatus): string => {
 
 export const getStatusText = (status: ProjectStatus): string => {
   const texts: Record<ProjectStatus, string> = {
-    planning: 'Planning',
-    in_progress: 'In Progress',
-    completed: 'Completed',
-    suspended: 'Suspended',
+    planning: '规划中',
+    in_progress: '进行中',
+    completed: '已完成',
+    suspended: '已暂停',
   };
   return texts[status] || status;
 };
 
 export const getDepartmentText = (department: Department): string => {
   const texts: Record<Department, string> = {
-    market: 'Marketing',
-    engineering: 'Engineering',
-    finance: 'Finance',
-    admin: 'Admin',
+    market: '市场部',
+    engineering: '工程部',
+    finance: '财务部',
+    admin: '管理员',
   };
   return texts[department] || department;
 };
@@ -71,10 +71,10 @@ export const getDepartmentColor = (department: Department): string => {
 };
 
 export const getQuarterLabel = (quarter: number): string => {
-  return `Q${quarter}`;
+  return `第${quarter}季度`;
 };
 
 export const getMonthLabel = (month: number): string => {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
   return months[month - 1] || '';
 };
