@@ -35,6 +35,13 @@ from app.schemas.statistics import (
     FinanceSummary,
     ProjectReport,
 )
+# 新增excel_schema
+from app.schemas.excel_schema import (
+    ProjectExcelImport,
+    ProjectExcelExport,
+    ExcelImportErrorItem,     
+    ExcelImportResult,  
+)
 
 __all__ = [
     "UserCreate",
@@ -60,4 +67,8 @@ __all__ = [
     "EngineeringSummary",
     "FinanceSummary",
     "ProjectReport",
+    "ProjectExcelExport",
+    "ExcelImportErrorItem",
+    "ExcelImportResult",
+    "ProjectExcelImport",
 ]
