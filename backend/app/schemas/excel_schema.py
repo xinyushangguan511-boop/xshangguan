@@ -50,54 +50,6 @@ class ProjectExcelImport(BaseModel):
         "validate_assignment": True  # 赋值时也触发校验
     }
 
-# ===================== 项目模块 Excel 导出模型 =====================
-class ProjectExcelExport(BaseModel):
-    """
-    项目Excel导出模型（格式化字段为中文展示）
-    """
-    项目编码: str = Field(..., alias="project_code")
-    项目名称: str = Field(..., alias="project_name")
-    项目描述: Optional[str] = Field(None, alias="description")
-    建设单位: Optional[str] = Field(None, alias="construction_unit")
-    项目地点: Optional[str] = Field(None, alias="location")
-    合同开始时间: Optional[str] = Field(None, alias="contract_start_date")
-    合同结束时间: Optional[str] = Field(None, alias="contract_end_date")
-    合同工期: Optional[int] = Field(None, alias="contract_duration")
-    实际开工时间: Optional[str] = Field(None, alias="actual_start_date")
-    项目状态: str = Field(..., alias="status")
-    创建人ID: UUID = Field(..., alias="created_by")
-    创建时间: str = Field(..., alias="created_at")
-    更新时间: str = Field(..., alias="updated_at")
-
-    # 格式化日期字段（date/datetime → 字符串 YYYY-MM-DD）
-    @field_validator("合同开始时间", "合同结束时间", "实际开工时间", mode="before")
-    def format_date(cls, v):
-        if isinstance(v, (date, datetime)):
-            return v.strftime("%Y-%m-%d")
-        return v
-
-    # 修复：校验字段名改为中文「项目状态」（而非alias「status」）
-    @field_validator("项目状态", mode="before")
-    def format_status(cls, v):
-        status_map = {
-            ProjectStatus.PLANNING: "规划中",
-            ProjectStatus.IN_PROGRESS: "进行中",
-            ProjectStatus.COMPLETED: "已完成",
-            ProjectStatus.SUSPENDED: "已暂停"
-        }
-        return status_map.get(v, str(v))
-
-    # 修复：校验字段名改为中文「创建时间」「更新时间」（而非alias）
-    @field_validator("创建时间", "更新时间", mode="before")
-    def format_datetime(cls, v):
-        if isinstance(v, datetime):
-            return v.strftime("%Y-%m-%d %H:%M:%S")
-        return v
-
-    model_config = {
-        "populate_by_name": True,
-        "from_attributes": True  # 支持从ORM模型（如SQLAlchemy）直接赋值
-    }
 
 # ===================== Excel 导入通用返回模型 =====================
 class ExcelImportErrorItem(BaseModel):
