@@ -6,6 +6,8 @@ from app.routers.engineering import router as engineering_router
 from app.routers.finance import router as finance_router
 from app.routers.attachments import router as attachments_router
 from app.routers.statistics import router as statistics_router
+# 新增：导入excel_router
+from app.routers.excel_router import router as excel_router
 
 __all__ = [
     "auth_router",
@@ -16,4 +18,6 @@ __all__ = [
     "finance_router",
     "attachments_router",
     "statistics_router",
+    # 新增：加入excel_router到导出列表
+    "excel_router",
 ]
