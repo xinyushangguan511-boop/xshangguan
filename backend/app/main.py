@@ -12,6 +12,8 @@ from app.routers import (
     finance_router,
     attachments_router,
     statistics_router,
+    # 新增：导入excel路由
+    excel_router,  
 )
 
 
@@ -49,6 +51,7 @@ app.include_router(engineering_router)
 app.include_router(finance_router)
 app.include_router(attachments_router)
 app.include_router(statistics_router)
+app.include_router(excel_router)  # 新增：注册excel路由
 
 
 @app.get("/")
