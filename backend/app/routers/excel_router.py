@@ -17,8 +17,6 @@ router = APIRouter(prefix="/api/excel", tags=["excel"])
 
 @router.post("/import/{project_id}", status_code=status.HTTP_200_OK)
 async def import_excel_to_project(
-    project_id: UUID,
-    data_type: str,  # 接收数据类型：market/engineering/finance
     file: Annotated[UploadFile, File()],
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_active_user)],
@@ -104,4 +102,5 @@ async def export_project_to_excel(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Excel导出失败：{str(e)}"
+
         )
