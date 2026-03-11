@@ -17,6 +17,8 @@ router = APIRouter(prefix="/api/excel", tags=["excel"])
 
 @router.post("/import/{project_id}", status_code=status.HTTP_200_OK)
 async def import_excel_to_project(
+    #project_id: UUID,
+    #data_type: str,  # 接收数据类型：market/engineering/finance
     file: Annotated[UploadFile, File()],
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_active_user)],
@@ -61,46 +63,4 @@ async def import_excel_to_project(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Excel导入失败：{str(e)}"
-        )
-
-
-@router.get("/export/{project_id}", response_class=StreamingResponse)
-async def export_project_to_excel(
-    project_id: UUID,
-    db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    """
-    导出指定项目的所有板块数据为Excel文件（多sheet）
-    :param project_id: 项目ID
-    :param db: 数据库会话
-    :param current_user: 当前登录用户（已校验活跃状态）
-    :return: 流式Excel文件响应（直接下载）
-    """
-    # 初始化Excel服务并执行导出
-    excel_service = ExcelService(db)
-    try:
-        # 获取Excel字节内容
-        excel_bytes = await excel_service.export_project_to_excel(
-            project_id=project_id,
-            user=current_user
-        )
-
-        # 构造流式响应（支持浏览器直接下载）
-        return StreamingResponse(
-            content=BytesIO(excel_bytes),
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            headers={
-                "Content-Disposition": f"attachment; filename=项目{project_id}_数据导出.xlsx",
-                "Cache-Control": "no-cache"
-            }
-        )
-    except HTTPException as e:
-        # 透传权限/项目不存在等业务异常
-        raise e
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Excel导出失败：{str(e)}"
-
         )
