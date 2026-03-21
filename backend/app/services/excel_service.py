@@ -11,6 +11,9 @@ from app.config import settings
 # 导入项目模型和工具类
 from app.models.project import Project
 from app.models.user import User
+from app.models.market import MarketData
+from app.models.engineering import EngineeringData
+from app.models.finance import FinanceData
 from app.utils.file_utils import FileUtils  # 保留原工具类依赖
 
 
@@ -116,3 +119,59 @@ class ExcelService:
         await self.db.commit()
         await self.db.refresh(project)
         return project
+
+    async def _import_market_data(self, project: Project, excel_data: List[Dict[str, Any]], user: User):
+        """导入市场数据"""
+        for row in excel_data:
+            record = MarketData(
+                project_id=project.id,
+                year=int(row.get("year", 0)),
+                month=int(row.get("month", 0)),
+                building_area=row.get("building_area") or None,
+                structure=row.get("structure") or None,
+                floors=int(row["floors"]) if row.get("floors") else None,
+                contract_value=row.get("contract_value") or None,
+                prepayment_ratio=row.get("prepayment_ratio") or None,
+                advance_amount=row.get("advance_amount") or None,
+                progress_payment_ratio=row.get("progress_payment_ratio") or None,
+                contract_type=row.get("contract_type") or None,
+                remarks=row.get("remarks") or None,
+                created_by=user.id,
+            )
+            self.db.add(record)
+
+    async def _import_engineering_data(self, project: Project, excel_data: List[Dict[str, Any]], user: User):
+        """导入工程数据"""
+        for row in excel_data:
+            record = EngineeringData(
+                project_id=project.id,
+                year=int(row.get("year", 0)),
+                month=int(row.get("month", 0)),
+                actual_duration=int(row["actual_duration"]) if row.get("actual_duration") else None,
+                end_period_progress=row.get("end_period_progress") or None,
+                contract_value=row.get("contract_value") or None,
+                monthly_output=row.get("monthly_output") or None,
+                planned_output=row.get("planned_output") or None,
+                monthly_approval=row.get("monthly_approval") or None,
+                staff_count=int(row["staff_count"]) if row.get("staff_count") else None,
+                next_month_plan=row.get("next_month_plan") or None,
+                remarks=row.get("remarks") or None,
+                created_by=user.id,
+            )
+            self.db.add(record)
+
+    async def _import_finance_data(self, project: Project, excel_data: List[Dict[str, Any]], user: User):
+        """导入财务数据"""
+        for row in excel_data:
+            record = FinanceData(
+                project_id=project.id,
+                year=int(row.get("year", 0)),
+                month=int(row.get("month", 0)),
+                monthly_revenue=row.get("monthly_revenue") or None,
+                monthly_cost=row.get("monthly_cost") or None,
+                monthly_payment_received=row.get("monthly_payment_received") or None,
+                target_margin=row.get("target_margin") or None,
+                remarks=row.get("remarks") or None,
+                created_by=user.id,
+            )
+            self.db.add(record)

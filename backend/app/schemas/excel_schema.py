@@ -51,6 +51,27 @@ class ProjectExcelImport(BaseModel):
     }
 
 
+# ===================== 项目模块 Excel 导出模型 =====================
+class ProjectExcelExport(BaseModel):
+    """
+    项目Excel导出模型（用于将项目数据导出为Excel）
+    """
+    project_code: str = Field(..., description="项目编码")
+    project_name: str = Field(..., description="项目名称")
+    description: Optional[str] = Field(None, description="项目描述")
+    construction_unit: Optional[str] = Field(None, description="建设单位")
+    location: Optional[str] = Field(None, description="项目地点")
+    contract_start_date: Optional[date] = Field(None, description="合同开始时间")
+    contract_end_date: Optional[date] = Field(None, description="合同结束时间")
+    contract_duration: Optional[int] = Field(None, description="合同工期")
+    actual_start_date: Optional[date] = Field(None, description="实际开工时间")
+    status: Optional[str] = Field(None, description="项目状态")
+
+    model_config = {
+        "from_attributes": True,
+    }
+
+
 # ===================== Excel 导入通用返回模型 =====================
 class ExcelImportErrorItem(BaseModel):
     """

@@ -1,6 +1,6 @@
 from typing import Annotated, Optional
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from io import BytesIO
@@ -17,8 +17,8 @@ router = APIRouter(prefix="/api/excel", tags=["excel"])
 
 @router.post("/import/{project_id}", status_code=status.HTTP_200_OK)
 async def import_excel_to_project(
-    #project_id: UUID,
-    #data_type: str,  # 接收数据类型：market/engineering/finance
+    project_id: UUID,
+    data_type: Annotated[str, Query(description="数据类型：market/engineering/finance")],
     file: Annotated[UploadFile, File()],
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(get_current_active_user)],
