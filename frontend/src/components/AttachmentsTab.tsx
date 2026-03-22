@@ -33,9 +33,10 @@ export const AttachmentsTab: React.FC<Props> = ({ projectId, data }) => {
 
   const uploadMutation = useMutation({
     mutationFn: ({ file, fileType }: { file: File; fileType: string }) =>
-      attachmentsApi.upload(projectId, file, fileType),
+      attachmentsApi.upload(projectId, file, { fileType, module: 'project' }),
     onSuccess: () => {
       message.success('文件上传成功');
+      queryClient.invalidateQueries({ queryKey: ['attachments', projectId, 'project'] });
       queryClient.invalidateQueries({ queryKey: ['attachments', projectId] });
       setModalOpen(false);
       setFileList([]);
@@ -47,6 +48,7 @@ export const AttachmentsTab: React.FC<Props> = ({ projectId, data }) => {
     mutationFn: (id: string) => attachmentsApi.delete(id),
     onSuccess: () => {
       message.success('文件删除成功');
+      queryClient.invalidateQueries({ queryKey: ['attachments', projectId, 'project'] });
       queryClient.invalidateQueries({ queryKey: ['attachments', projectId] });
     },
     onError: () => message.error('文件删除失败'),
