@@ -39,9 +39,14 @@ from app.schemas.statistics import (
 from app.schemas.excel_schema import (
     ProjectExcelImport,
     ProjectExcelExport,
+    MarketDataExcelImport,
+    EngineeringDataExcelImport,
+    FinanceDataExcelImport,
     ExcelImportErrorItem,     
     ExcelImportResult,  
 )
+# 导入AttachmentModule（附件板块枚举）
+from app.models.attachment import AttachmentModule
 
 __all__ = [
     "UserCreate",
@@ -63,12 +68,16 @@ __all__ = [
     "FinanceDataUpdate",
     "FinanceDataResponse",
     "AttachmentResponse",
+    "AttachmentModule",
     "MarketSummary",
     "EngineeringSummary",
     "FinanceSummary",
     "ProjectReport",
+    "ProjectExcelImport",
     "ProjectExcelExport",
+    "MarketDataExcelImport",
+    "EngineeringDataExcelImport",
+    "FinanceDataExcelImport",
     "ExcelImportErrorItem",
     "ExcelImportResult",
-    "ProjectExcelImport",
 ]
