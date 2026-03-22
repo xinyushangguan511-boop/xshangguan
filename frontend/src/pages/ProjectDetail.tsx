@@ -42,8 +42,9 @@ export const ProjectDetail: React.FC = () => {
   });
 
   const { data: attachments } = useQuery({
-    queryKey: ['attachments', id],
-    queryFn: () => attachmentsApi.list(id!),
+    queryKey: ['attachments', id, 'project'],
+    // 详情页这个标签仅展示“项目级附件”，不混入市场/工程/财务板块附件。
+    queryFn: () => attachmentsApi.list(id!, 'project'),
     enabled: !!id,
   });
 

@@ -3,6 +3,8 @@ import { Table, Select, Card, Typography, Space, Spin, Button, Modal, Form, Inpu
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { projectsApi, financeApi } from '../services/api';
+import { ExcelImportModal } from '../components/ExcelImportModal';
+import { ModuleAttachmentsModal } from '../components/ModuleAttachmentsModal';
 import { useAuth } from '../stores/AuthContext';
 import { formatCurrency } from '../utils';
 import type { FinanceData } from '../types';
@@ -113,11 +115,17 @@ export const FinancePage: React.FC = () => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
         <Title level={4}>财务数据</Title>
-        {selectedProject && canEdit && (
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
-            新增数据
-          </Button>
-        )}
+        <Space wrap>
+          {canEdit && (
+            <ExcelImportModal dataType="finance" projectId={selectedProject} />
+          )}
+          {selectedProject && <ModuleAttachmentsModal projectId={selectedProject} module="finance" />}
+          {selectedProject && canEdit && (
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
+              新增数据
+            </Button>
+          )}
+        </Space>
       </div>
 
       <Card style={{ marginBottom: 16 }}>
