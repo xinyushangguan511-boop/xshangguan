@@ -2,6 +2,10 @@ export type Department = 'market' | 'engineering' | 'finance' | 'admin';
 
 export type ProjectStatus = 'planning' | 'in_progress' | 'completed' | 'suspended';
 
+export type AttachmentModule = 'project' | 'market' | 'engineering' | 'finance';
+
+export type ExcelDataType = 'project' | 'market' | 'engineering' | 'finance';
+
 export interface User {
   id: string;
   username: string;
@@ -130,6 +134,7 @@ export interface FinanceData {
 export interface Attachment {
   id: string;
   project_id: string;
+  module: AttachmentModule;
   department: Department;
   file_type?: string;
   file_name: string;
@@ -137,6 +142,14 @@ export interface Attachment {
   file_size: number;
   uploaded_by: string;
   uploaded_at: string;
+}
+
+export interface ExcelImportResponse {
+  status: string;
+  message: string;
+  project_id?: string;
+  project_name?: string;
+  data_type?: Exclude<ExcelDataType, 'project'>;
 }
 
 export interface PeriodSummary {

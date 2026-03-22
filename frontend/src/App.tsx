@@ -54,6 +54,8 @@ const App: React.FC = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="projects" element={<Projects />} />
                 <Route path="projects/:id" element={<ProjectDetail />} />
+                {/* 新增的项目附件子路由 */}
+                <Route path="projects/:id/attachments" element={<AttachmentsPage />} />
                 <Route path="market" element={<MarketPage />} />
                 <Route path="engineering" element={<EngineeringPage />} />
                 <Route path="finance" element={<FinancePage />} />
