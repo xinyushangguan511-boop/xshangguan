@@ -23,14 +23,16 @@ class FileUtils:
         return ext in allowed_extensions
 
     @staticmethod
-    def validate_file_size(file: UploadFile, max_size: int) -> bool:
+    def validate_file_size(file, max_size: int) -> bool:
         """
         校验文件大小是否超出限制（单位：字节，适配attachments.py的MAX_FILE_SIZE）
-        :param file: FastAPI UploadFile对象
+        :param file: FastAPI UploadFile对象或bytes内容
         :param max_size: 最大允许大小（字节）
         :return: 校验结果
         """
         try:
+            if isinstance(file, bytes):
+                return len(file) <= max_size
             # 重置文件指针（避免读取后指针偏移导致后续操作异常）
             file.file.seek(0, os.SEEK_END)
             file_size = file.file.tell()
