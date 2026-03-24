@@ -1,10 +1,19 @@
 import uuid
 from datetime import datetime
+from enum import Enum as PyEnum
 from sqlalchemy import String, Integer, DateTime, ForeignKey, Enum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 from app.models.user import Department
+
+
+class AttachmentModule(str, PyEnum):
+    """附件所属板块"""
+    PROJECT = "project"  # 项目级附件
+    MARKET = "market"    # 市场数据板块
+    ENGINEERING = "engineering"  # 工程数据板块
+    FINANCE = "finance"  # 财务数据板块
 
 
 class Attachment(Base):
@@ -15,6 +24,9 @@ class Attachment(Base):
     )
     project_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False
+    )
+    module: Mapped[AttachmentModule] = mapped_column(
+        Enum(AttachmentModule), default=AttachmentModule.PROJECT, nullable=False
     )
     department: Mapped[Department] = mapped_column(Enum(Department), nullable=False)
     file_type: Mapped[str | None] = mapped_column(String(50), nullable=True)

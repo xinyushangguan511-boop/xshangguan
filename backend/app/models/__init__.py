@@ -3,7 +3,7 @@ from app.models.project import Project, ProjectStatus
 from app.models.market import MarketData
 from app.models.engineering import EngineeringData
 from app.models.finance import FinanceData
-from app.models.attachment import Attachment
+from app.models.attachment import Attachment, AttachmentModule
 
 __all__ = [
     "User",
@@ -13,4 +13,5 @@ __all__ = [
     "EngineeringData",
     "FinanceData",
     "Attachment",
+    "AttachmentModule",
 ]

@@ -15,10 +15,11 @@ import {
   Popconfirm,
   Typography,
 } from 'antd';
-import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, EyeOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { projectsApi } from '../services/api';
+import { ExcelImportModal } from '../components/ExcelImportModal';
 import { useAuth } from '../stores/AuthContext';
 import { getStatusColor, getStatusText } from '../utils';
 import type { Project, ProjectStatus } from '../types';
@@ -39,6 +40,7 @@ export const Projects: React.FC = () => {
   const canCreate = hasPermission(['market']);
   const canEdit = hasPermission(['market', 'engineering']);
   const canDelete = hasPermission(['market']);
+  const canView = hasPermission(['market','engineering']);
 
   const { data, isLoading } = useQuery({
     queryKey: ['projects', page, search],
@@ -147,7 +149,7 @@ export const Projects: React.FC = () => {
     {
       title: '操作',
       key: 'actions',
-      width: 150,
+      width: 200,
       render: (_: unknown, record: Project) => (
         <Space>
           <Button
@@ -155,6 +157,15 @@ export const Projects: React.FC = () => {
             icon={<EyeOutlined />}
             onClick={() => navigate(`/projects/${record.id}`)}
           />
+          {/* 新增：附件按钮 */}
+          {canView && (
+            <Button
+              type="link"
+              icon={<PaperClipOutlined />}
+              onClick={() => navigate(`/projects/${record.id}/attachments`)} // 跳转到附件子页面
+              
+            />
+          )}
           {canEdit && (
             <Button
               type="link"
@@ -187,6 +198,7 @@ export const Projects: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
             style={{ width: 250 }}
           />
+          {canCreate && <ExcelImportModal dataType="project" />}
           {canCreate && (
             <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
               新建项目

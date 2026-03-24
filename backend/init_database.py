@@ -55,6 +55,14 @@ EXCEPTION
     WHEN duplicate_object THEN NULL;
 END $$;
 
+DO $$ BEGIN
+    CREATE TYPE attachmentmodule AS ENUM ('PROJECT', 'MARKET', 'ENGINEERING', 'FINANCE');
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
+
+-- 注意：attachmentmodule使用大写标签，与SQLAlchemy枚举成员名对齐（AttachmentModule.PROJECT等）
+
 -- ============================================================
 -- Users Table
 -- ============================================================
@@ -181,6 +189,8 @@ CREATE INDEX IF NOT EXISTS ix_finance_data_year_month ON finance_data(year, mont
 CREATE TABLE IF NOT EXISTS attachments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    -- 直接在建表阶段提供module字段，避免后续增量迁移才能使用附件模块化功能
+    module attachmentmodule DEFAULT 'PROJECT'::attachmentmodule NOT NULL,
     department department NOT NULL,
     file_type VARCHAR(50),
     file_name VARCHAR(255) NOT NULL,
@@ -191,6 +201,8 @@ CREATE TABLE IF NOT EXISTS attachments (
 );
 
 CREATE INDEX IF NOT EXISTS ix_attachments_project_id ON attachments(project_id);
+-- 支持按模块筛选附件（project/market/engineering/finance）
+CREATE INDEX IF NOT EXISTS ix_attachments_module ON attachments(module);
 CREATE INDEX IF NOT EXISTS ix_attachments_department ON attachments(department);
 CREATE INDEX IF NOT EXISTS ix_attachments_uploaded_by ON attachments(uploaded_by);
 """

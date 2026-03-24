@@ -61,6 +61,16 @@ setup_db.bat
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
+### Existing Database Upgrade
+
+If you pulled a newer backend version into an existing database, run the incremental migration once before starting the server:
+
+```bash
+python migrate_db.py
+```
+
+This is required for schema additions such as the attachments.module column used by the new attachment categorization logic.
+
 The API will be available at: http://localhost:8000
 
 API documentation: http://localhost:8000/docs

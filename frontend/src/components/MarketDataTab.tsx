@@ -3,6 +3,8 @@ import { Table, Button, Modal, Form, InputNumber, Input, Select, Space, message,
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { marketApi } from '../services/api';
+import { ExcelImportModal } from './ExcelImportModal';
+import { ModuleAttachmentsModal } from './ModuleAttachmentsModal';
 import { useAuth } from '../stores/AuthContext';
 import { formatCurrency, formatNumber } from '../utils';
 import type { MarketData } from '../types';
@@ -104,16 +106,15 @@ export const MarketDataTab: React.FC<Props> = ({ projectId, data }) => {
 
   return (
     <div>
-      {canEdit && (
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => handleOpenModal()}
-          style={{ marginBottom: 16 }}
-        >
-          新增数据
-        </Button>
-      )}
+      <Space wrap style={{ marginBottom: 16 }}>
+        {canEdit && (
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
+            新增数据
+          </Button>
+        )}
+        {canEdit && <ExcelImportModal dataType="market" projectId={projectId} />}
+        <ModuleAttachmentsModal projectId={projectId} module="market" />
+      </Space>
 
       <Table columns={columns} dataSource={data} rowKey="id" size="small" scroll={{ x: 1200 }} />
 

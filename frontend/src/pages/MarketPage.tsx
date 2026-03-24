@@ -3,6 +3,8 @@ import { Table, Select, Card, Typography, Space, Spin, Button, Modal, Form, Inpu
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { projectsApi, marketApi } from '../services/api';
+import { ExcelImportModal } from '../components/ExcelImportModal';
+import { ModuleAttachmentsModal } from '../components/ModuleAttachmentsModal';
 import { useAuth } from '../stores/AuthContext';
 import { formatCurrency, formatNumber } from '../utils';
 import type { MarketData } from '../types';
@@ -117,11 +119,17 @@ export const MarketPage: React.FC = () => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
         <Title level={4}>市场数据</Title>
-        {selectedProject && canEdit && (
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
-            新增数据
-          </Button>
-        )}
+        <Space wrap>
+          {canEdit && (
+            <ExcelImportModal dataType="market" projectId={selectedProject} />
+          )}
+          {selectedProject && <ModuleAttachmentsModal projectId={selectedProject} module="market" />}
+          {selectedProject && canEdit && (
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
+              新增数据
+            </Button>
+          )}
+        </Space>
       </div>
 
       <Card style={{ marginBottom: 16 }}>

@@ -1,4 +1,4 @@
-import type { ProjectStatus, Department } from '../types';
+import type { ProjectStatus, Department, AttachmentModule } from '../types';
 
 export const formatCurrency = (value?: number): string => {
   if (value === undefined || value === null) return '-';
@@ -68,6 +68,16 @@ export const getDepartmentColor = (department: Department): string => {
     admin: 'red',
   };
   return colors[department] || 'default';
+};
+
+export const getAttachmentModuleText = (module: AttachmentModule): string => {
+  const texts: Record<AttachmentModule, string> = {
+    project: '项目',
+    market: '市场',
+    engineering: '工程',
+    finance: '财务',
+  };
+  return texts[module] || module;
 };
 
 export const getQuarterLabel = (quarter: number): string => {

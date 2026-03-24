@@ -1,6 +1,6 @@
 """
-Database migration script to add new columns for user management feature.
-Run this script once to update the database schema.
+Database migration script for incremental schema updates.
+Run this script after pulling backend schema changes into an existing database.
 
 Usage: python migrate_db.py
 """
@@ -11,7 +11,10 @@ from app.database import engine
 
 
 async def migrate():
-    """Add new columns to existing tables"""
+    """Apply additive schema changes required by newer backend versions.
+
+    说明：该脚本面向“已有数据库”的增量升级，不替代init_database.py。
+    """
     async with engine.begin() as conn:
         # Add new columns to users table
         print("Migrating users table...")
@@ -38,6 +41,9 @@ async def migrate():
         print("Migrating finance_data table...")
         await add_created_by_column(conn, "finance_data")
 
+        print("Migrating attachments table...")
+        await ensure_attachment_module_schema(conn)
+
     print("\nMigration completed successfully!")
 
 
@@ -52,6 +58,35 @@ async def add_created_by_column(conn, table_name: str):
         print(f"  Added created_by column to {table_name}")
     except Exception as e:
         print(f"  Skipped (may already exist): {str(e)[:50]}")
+
+
+async def ensure_attachment_module_schema(conn):
+    """Add attachmentmodule enum, module column, and supporting index for attachments.
+
+    历史背景：附件模块化后，ORM模型新增Attachment.module；
+    若旧库未升级会在项目删除/附件查询时触发“column attachments.module does not exist”。
+    """
+    statements = [
+        """
+        DO $$ BEGIN
+            CREATE TYPE attachmentmodule AS ENUM ('PROJECT', 'MARKET', 'ENGINEERING', 'FINANCE');
+        EXCEPTION
+            WHEN duplicate_object THEN NULL;
+        END $$
+        """,
+        # 默认值需要显式cast到attachmentmodule，避免asyncpg对枚举文本解析失败。
+        "ALTER TABLE attachments ADD COLUMN IF NOT EXISTS module attachmentmodule DEFAULT 'PROJECT'::attachmentmodule NOT NULL",
+        "UPDATE attachments SET module = 'PROJECT'::attachmentmodule WHERE module IS NULL",
+        "CREATE INDEX IF NOT EXISTS ix_attachments_module ON attachments(module)",
+    ]
+
+    for sql in statements:
+        try:
+            await conn.execute(text(sql))
+            preview = " ".join(sql.split())[:70]
+            print(f"  Executed: {preview}...")
+        except Exception as e:
+            print(f"  Skipped (may already exist): {str(e)[:80]}")
 
 
 if __name__ == "__main__":

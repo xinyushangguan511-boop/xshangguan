@@ -9,10 +9,13 @@ import type {
   RegistrationStatus,
   Project,
   ProjectListResponse,
+  ExcelDataType,
+  ExcelImportResponse,
   MarketData,
   EngineeringData,
   FinanceData,
   Attachment,
+  AttachmentModule,
   MarketSummary,
   EngineeringSummary,
   FinanceSummary,
@@ -205,18 +208,34 @@ export const financeApi = {
 
 // Attachments
 export const attachmentsApi = {
-  list: async (projectId: string): Promise<Attachment[]> => {
-    const response = await api.get<Attachment[]>(`/attachments/${projectId}`);
+  list: async (projectId: string, module?: AttachmentModule): Promise<Attachment[]> => {
+    // 后端通过 query 参数 module 做筛选，不传时返回项目下全部附件。
+    const params = module ? `?module=${module}` : '';
+    const response = await api.get<Attachment[]>(`/attachments/${projectId}${params}`);
     return response.data;
   },
-  upload: async (projectId: string, file: File, fileType?: string): Promise<Attachment> => {
+  upload: async (
+    projectId: string,
+    file: File,
+    options?: { fileType?: string; module?: AttachmentModule }
+  ): Promise<Attachment> => {
     const formData = new FormData();
     formData.append('file', file);
-    if (fileType) formData.append('file_type', fileType);
+    if (options?.fileType) formData.append('file_type', options.fileType);
+    // 通用上传接口支持显式指定附件所属模块。
+    if (options?.module) formData.append('module', options.module);
     const response = await api.post<Attachment>(`/attachments/${projectId}/upload`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
+  },
+  uploadByModule: async (
+    projectId: string,
+    module: AttachmentModule,
+    file: File,
+    fileType?: string
+  ): Promise<Attachment> => {
+    return attachmentsApi.upload(projectId, file, { fileType, module });
   },
   download: async (attachmentId: string): Promise<Blob> => {
     const response = await api.get(`/attachments/${attachmentId}/download`, {
@@ -226,6 +245,52 @@ export const attachmentsApi = {
   },
   delete: async (attachmentId: string): Promise<void> => {
     await api.delete(`/attachments/${attachmentId}`);
+  },
+};
+
+// Excel Import
+export const excelApi = {
+  importProjects: async (file: File): Promise<ExcelImportResponse> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    // 项目主数据导入：Excel 直接生成/更新项目，不依赖 projectId。
+    const response = await api.post<ExcelImportResponse>('/excel/import/project', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+  importProjectData: async (
+    projectId: string,
+    dataType: Exclude<ExcelDataType, 'project'>,
+    file: File
+  ): Promise<ExcelImportResponse> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    // 指定项目导入：Excel 中可以没有项目编码，直接落到当前 projectId。
+    const response = await api.post<ExcelImportResponse>(
+      `/excel/import/${projectId}?data_type=${dataType}`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+    return response.data;
+  },
+  importAutoMatchedData: async (
+    dataType: Exclude<ExcelDataType, 'project'>,
+    file: File
+  ): Promise<ExcelImportResponse> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    // 自动匹配导入：后端会读取 Excel 里的项目编码并自行匹配项目。
+    const response = await api.post<ExcelImportResponse>(
+      `/excel/import/auto/data?data_type=${dataType}`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+    return response.data;
   },
 };
 

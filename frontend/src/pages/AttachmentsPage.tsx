@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Table, Select, Card, Button, Typography, Space, Spin, Tag, message, Popconfirm } from 'antd';
 import { DownloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { projectsApi, attachmentsApi } from '../services/api';
 import { useAuth } from '../stores/AuthContext';
-import { formatFileSize, getDepartmentColor, getDepartmentText } from '../utils';
-import type { Attachment } from '../types';
+import { formatFileSize, getAttachmentModuleText, getDepartmentColor, getDepartmentText } from '../utils';
+import type { Attachment, AttachmentModule } from '../types';
 
 const { Title } = Typography;
 
 export const AttachmentsPage: React.FC = () => {
-  const [selectedProject, setSelectedProject] = useState<string | undefined>();
+  const { id: routeProjectId } = useParams<{ id: string }>();
+  // 如果是从“项目附件”按钮跳进来，默认带上当前项目；从菜单进入则保持为空。
+  const [selectedProject, setSelectedProject] = useState<string | undefined>(routeProjectId);
+  const [selectedModule, setSelectedModule] = useState<AttachmentModule | undefined>();
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -21,8 +25,9 @@ export const AttachmentsPage: React.FC = () => {
   });
 
   const { data: attachments, isLoading: attachmentsLoading } = useQuery({
-    queryKey: ['attachments', selectedProject],
-    queryFn: () => attachmentsApi.list(selectedProject!),
+    queryKey: ['attachments', selectedProject, selectedModule],
+    // 附件中心支持按模块查看，方便把项目附件和业务板块附件分开排查。
+    queryFn: () => attachmentsApi.list(selectedProject!, selectedModule),
     enabled: !!selectedProject,
   });
 
@@ -54,6 +59,12 @@ export const AttachmentsPage: React.FC = () => {
   const columns = [
     { title: '文件名', dataIndex: 'file_name', ellipsis: true },
     { title: '类型', dataIndex: 'file_type', width: 100 },
+    {
+      title: '板块',
+      dataIndex: 'module',
+      width: 100,
+      render: (module: AttachmentModule) => getAttachmentModuleText(module),
+    },
     {
       title: '所属部门',
       dataIndex: 'department',
@@ -112,6 +123,19 @@ export const AttachmentsPage: React.FC = () => {
                 {p.project_code} - {p.project_name}
               </Select.Option>
             ))}
+          </Select>
+          <span>板块筛选：</span>
+          <Select
+            style={{ width: 160 }}
+            placeholder="全部板块"
+            allowClear
+            value={selectedModule}
+            onChange={setSelectedModule}
+          >
+            <Select.Option value="project">项目</Select.Option>
+            <Select.Option value="market">市场</Select.Option>
+            <Select.Option value="engineering">工程</Select.Option>
+            <Select.Option value="finance">财务</Select.Option>
           </Select>
         </Space>
       </Card>
